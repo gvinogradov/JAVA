@@ -1,14 +1,10 @@
-import com.skillbox.airport.Aircraft;
 import com.skillbox.airport.Airport;
 import com.skillbox.airport.Flight;
-import com.skillbox.airport.Terminal;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -19,11 +15,11 @@ public class Main {
     }
 
     public static List<Flight> findPlanesLeavingInTheNextTwoHours(Airport airport) {
-        return  airport.getTerminals().stream()
-                .collect(Collectors.toMap(Function.identity(), Terminal::getFlights)).values()
-                .stream().collect(Collectors.toList())
-                .stream().flatMap(e -> e.stream())
-                .filter(f -> inTwoHours(f.getDate()) && f.getType().equals(Flight.Type.DEPARTURE))
+
+        return airport.getTerminals().stream()
+                .flatMap(t -> t.getFlights().stream())
+                .filter(f -> f.getType().equals(Flight.Type.DEPARTURE)
+                        && inTwoHours(f.getDate()))
                 .collect(Collectors.toList());
     }
 
