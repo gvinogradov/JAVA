@@ -1,3 +1,5 @@
+import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
 
 public class Main {
@@ -7,12 +9,13 @@ public class Main {
     public static void main(String[] args) {
         List<Employee> staff = Employee.loadStaffFromFile(STAFF_TXT);
         Employee employeeMaxSalary = findEmployeeWithHighestSalary(staff, 2017);
-        System.out.println(employeeMaxSalary);
+        System.out.println("\n"+employeeMaxSalary);
     }
 
     public static Employee findEmployeeWithHighestSalary(List<Employee> staff, int year) {
-        //TODO Метод должен вернуть сотрудника с максимальной зарплатой среди тех,
-        // кто пришёл в году, указанном в переменной year
-        return null;
+        return staff.stream()
+                .filter(e -> e.getWorkStart().toInstant().atZone(ZoneId.systemDefault())
+                        .toLocalDateTime().getYear() == year)
+                .max(Comparator.comparing(Employee::getSalary)).orElse(null);
     }
 }
