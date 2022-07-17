@@ -15,6 +15,15 @@ public class RouteCalculator {
         this.stationIndex = stationIndex;
     }
 
+    public List<Station> getShortestRoute(Station from, Station to, int connections) {
+        switch (connections) {
+            case 0: return getRouteOnTheLine(from, to);
+            case 1: return getRouteWithOneConnection(from, to);
+            case 2: return getRouteWithTwoConnections(from, to);
+            default: return getShortestRoute(from, to);
+        }
+    }
+
     public List<Station> getShortestRoute(Station from, Station to) {
         List<Station> route = getRouteOnTheLine(from, to);
         if (route != null) {
@@ -97,7 +106,7 @@ public class RouteCalculator {
                 }
             }
         }
-        return route;
+        return !route.isEmpty() ? route : null;
     }
 
     private boolean isConnected(Station station1, Station station2) {
@@ -142,10 +151,10 @@ public class RouteCalculator {
                 if (route.isEmpty() || route.size() > way.size()) {
                     route.clear();
                     route.addAll(way);
+                    return route;
                 }
             }
         }
-
-        return route;
+        return null;
     }
 }
