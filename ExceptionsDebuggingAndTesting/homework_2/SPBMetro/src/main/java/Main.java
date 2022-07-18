@@ -1,5 +1,7 @@
 import core.Line;
 import core.Station;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,19 +13,29 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    private static final String DATA_FILE = "src/main/resources/map.json";
+    private static Logger logger = LogManager.getLogger(Main.class);
+    private static final String DATA_FILE = "d:/1/map.json";
     private static Scanner scanner;
 
     private static StationIndex stationIndex;
 
     public static void main(String[] args) {
         RouteCalculator calculator = getRouteCalculator();
+        logger = LogManager.getRootLogger();
+
+        try {
+            throw new RuntimeException("test error");
+        } catch (Exception ex) {
+            logger.error(ex.getMessage());
+        }
 
         System.out.println("Программа расчёта маршрутов метрополитена Санкт-Петербурга\n");
         scanner = new Scanner(System.in);
         for (; ; ) {
             Station from = takeStation("Введите станцию отправления:");
+            logger.info("Станция отправления: " + from.getName());
             Station to = takeStation("Введите станцию назначения:");
+            logger.info("Станция назначения: " + to.getName());
 
             List<Station> route = calculator.getShortestRoute(from, to);
             System.out.println("Маршрут:");
@@ -63,6 +75,7 @@ public class Main {
             if (station != null) {
                 return station;
             }
+            logger.warn("Станция не найдена: " + line);
             System.out.println("Станция не найдена :(");
         }
     }
@@ -140,6 +153,7 @@ public class Main {
             List<String> lines = Files.readAllLines(Paths.get(DATA_FILE));
             lines.forEach(line -> builder.append(line));
         } catch (Exception ex) {
+            logger.error(ex.getMessage());
             ex.printStackTrace();
         }
         return builder.toString();
