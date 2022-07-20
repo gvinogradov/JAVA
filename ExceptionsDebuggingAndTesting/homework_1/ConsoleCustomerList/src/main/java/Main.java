@@ -7,7 +7,7 @@ public class Main {
             "\tlist\n\tcount\n\tremove Василий Петров";
     private static final String COMMAND_ERROR = "Wrong command! Available command examples: \n" +
             COMMAND_EXAMPLES;
-    private static final String helpText = "Command examples:\n" + COMMAND_EXAMPLES;
+    private static final String HELP_TEXT = "Command examples:\n" + COMMAND_EXAMPLES;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -26,7 +26,7 @@ public class Main {
             } else if (tokens[0].equals("count")) {
                 System.out.println("There are " + executor.getCount() + " customers");
             } else if (tokens[0].equals("help")) {
-                System.out.println(helpText);
+                System.out.println(HELP_TEXT);
             } else {
                 System.out.println(COMMAND_ERROR);
             }

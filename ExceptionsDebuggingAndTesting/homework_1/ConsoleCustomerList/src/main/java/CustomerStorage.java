@@ -30,9 +30,15 @@ public class CustomerStorage {
         final int INDEX_EMAIL = 2;
         final int INDEX_PHONE = 3;
         String[] components = data.split("\\s+");
-        if (components.length != 4) throw new IllegalArgumentException("Illegal argument count");
-        if (!validateMail(components[INDEX_EMAIL])) throw new IllegalArgumentException("Wrong e-mail format");
-        if (!validateTel(components[INDEX_PHONE])) throw new IllegalArgumentException("Wrong phone format");
+        if (components.length != 4) {
+            throw new IllegalArgumentException("Illegal argument count");
+        }
+        if (!validateMail(components[INDEX_EMAIL])) {
+            throw new IllegalArgumentException("Wrong e-mail format");
+        }
+        if (!validateTel(components[INDEX_PHONE])) {
+            throw new IllegalArgumentException("Wrong phone format");
+        }
         String name = components[INDEX_NAME] + " " + components[INDEX_SURNAME];
         storage.put(name, new Customer(name, components[INDEX_PHONE], components[INDEX_EMAIL]));
     }

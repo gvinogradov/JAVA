@@ -7,14 +7,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
     private static Logger logger = LogManager.getLogger(Main.class);
-    private static final String DATA_FILE = "d:/1/map.json";
+    private static final String DATA_FILE = "src/main/resources/map.json";
     private static Scanner scanner;
 
     private static StationIndex stationIndex;
@@ -150,8 +151,8 @@ public class Main {
     private static String getJsonFile() {
         StringBuilder builder = new StringBuilder();
         try {
-            List<String> lines = Files.readAllLines(Paths.get(DATA_FILE));
-            lines.forEach(line -> builder.append(line));
+            Files.readAllLines(Path.of(DATA_FILE)).stream().collect(Collectors.toList())
+                    .forEach(line -> builder.append(line));
         } catch (Exception ex) {
             logger.error(ex.getMessage());
             ex.printStackTrace();
