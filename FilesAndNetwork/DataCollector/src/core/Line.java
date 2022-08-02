@@ -1,11 +1,13 @@
+package core;
+
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class Station {
+public class Line {
     private String name;
-    private String lineNumber;
+    private String number;
 
     public String toString() {
-        return "(" + lineNumber + ")" + name;
+        return number + " - " + name;
     }
 }
