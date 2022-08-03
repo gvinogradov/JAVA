@@ -1,27 +1,61 @@
-import core.Station;
+import lombok.Getter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
-import java.io.*;
+import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.lang.Character.isDigit;
 
 public class ParseFiles {
 
-    private static final String PATH = "data/";
+    private String path;
     private static final String CSV_FIELD_NAME = "Название станции";
     private static final String CSV_FIELD_NAME_2 = "Название";
     private static final String CSV_FIELD_DEPTH = "Глубина";
     private static final String CSV_FIELD_DATE = "Дата открытия";
-    private static final List<String> CSV_FIELDS = Arrays.asList(CSV_FIELD_NAME, CSV_FIELD_NAME_2, CSV_FIELD_DEPTH, CSV_FIELD_DATE);
-    private static List<Station> stations;
+    private static final String JSON_FIELD_NAME = "name";
+    private static final String JSON_FIELD_DATE = "date";
+    private static final String JSON_FIELD_NAME2 = "station_name";
+    private static final String JSON_FIELD_DEPTH = "depth";
+    private static final String JSON_FIELD_DEPTH2 = "depth_meters";
 
-    public static List<String> fileList(String path, String extension) {
+    @Getter
+    private Map<String, Double> stationDepth;
+    @Getter
+    private Map<String, Date> stationDate;
+
+    public void parseMetroStation(String path) {
+        this.path = path;
+        stationDepth = new HashMap<>();
+        stationDate = new HashMap<>();
+        parseCSVFile();
+        parseJSONFile();
+    }
+
+    private double parseDouble(String str) {
+        String value = str.replaceAll(",", ".").replaceAll("\"", "");
+        boolean negative = !isDigit(str.charAt(0));
+        value = value.replaceAll("[^\\d\\.]", "");
+        if (value.isEmpty()) {
+            return 0.0;
+        }
+        return negative ? -1.0 * Double.parseDouble(value) : Double.parseDouble(value);
+    }
+
+    private List<String> parseCSVLine(String str) {
+        List<String> fields = new ArrayList<>();
+        fields = Arrays.stream(str.split(",", 2)).collect(Collectors.toList());
+        return fields;
+    }
+
+    private List<String> fileList(String path, String extension) {
         List<String> files = new ArrayList<>();
         try {
             files = Files.find(Path.of(path), Integer.MAX_VALUE,
@@ -34,35 +68,14 @@ public class ParseFiles {
         return files;
     }
 
-    public static void parseCSVfile() {
-        List<String> filesCSV = fileList(PATH, ".csv");
+    private void parseCSVFile() {
+        List<String> filesCSV = fileList(path, ".csv");
         filesCSV.forEach(str -> {
             loadStationFromCSV(str);
         });
     }
 
-    public static void parseMetroStation(List<Station> stations) {
-        ParseFiles.stations = stations;
-        parseCSVfile();
-    }
-
-    private static double parseDouble(String str) {
-        String value = str.replaceAll(",", ".").replaceAll("\"", "");
-        boolean negative = !isDigit(str.charAt(0));
-        value = value.replaceAll("[^\\d\\.]", "");
-        if (value.isEmpty()) {
-            return 0.0;
-        }
-        return negative ? -1.0 * Double.parseDouble(value) : Double.parseDouble(value);
-    }
-
-    private static List<String> parseCSVLine(String str) {
-        List<String> fields = new ArrayList<>();
-        fields = Arrays.stream(str.split(",", 2)).collect(Collectors.toList());
-        return fields;
-    }
-
-    public static void loadStationFromCSV(String path) {
+    private void loadStationFromCSV(String path) {
         try {
             List<String> lines = Files.readAllLines(Path.of(path));
                     String[] fields = lines.get(0).split(",");
@@ -73,11 +86,12 @@ public class ParseFiles {
                 List<String> values = parseCSVLine(lines.get(i));
                 if (fields[1].equals(CSV_FIELD_DEPTH)) {
                     double depth = parseDouble(values.get(1));
-                    System.out.println(depth);
+                    stationDepth.put(values.get(0), depth);
                 }
                 if (fields[1].equals(CSV_FIELD_DATE)) {
                     String dateFormat = "dd.MM.yyyy";
-                 //   Date date = new SimpleDateFormat(dateFormat).parse(values.get(1));
+                    Date date = new SimpleDateFormat(dateFormat).parse(values.get(1));
+                    stationDate.put(values.get(0), date);
                 }
             }
         } catch (Exception ex) {
@@ -85,76 +99,55 @@ public class ParseFiles {
         }
     }
 
+    private void parseJSONFile() {
+        List<String> filesJSON = fileList(path, ".json");
+        filesJSON.forEach(str -> {
+            loadStationFromJSON(str);
+        });
+    }
 
-    private static void readCSV(String path) {
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void loadStationFromJSON(String path) {
         try {
-            parseCsvAttributes(lines);
-        } catch (IllegalArgumentException ex) {
-            System.out.println(path.toString() + " - " + ex.getMessage());
-        }
-    }
-
-    private static void parseCsvAttributes(List<String> lines) throws IllegalArgumentException {
-        List<String> fileds = Arrays.asList(lines.get(0).split(","));
-        if (fileds.size() > 2) {
-            throw new IllegalArgumentException("Too many fields");
-        }
-        Map<String, Integer> fieldsIndexes = CSV_FIELDS.stream().collect(Collectors
-                        .toMap(Function.identity(), s -> fileds.indexOf(s)));
-        for (int i = 1; i < lines.size(); i++) {
-            String[] args = lines.get(i).split(",");
-            putStationAttribute(args, fieldsIndexes);
-        }
-    }
-
-    public static void putStationAttribute(String[] args, Map<String, Integer> fieldsIndexes) throws IllegalArgumentException {
-        int indexName = Math.max(fieldsIndexes.get(CSV_FIELD_NAME),
-                                fieldsIndexes.get(CSV_FIELD_NAME_2));
-        if (indexName < 0) {
-            throw new IllegalArgumentException("Attribute NAME has not found");
-        }
-        Station station = stations.stream().filter(s -> s.getName()
-                .equalsIgnoreCase(args[indexName])).findAny().orElse(null);
-        if (station == null) {
-            System.out.println("Station with name: '" + args[indexName] + "' not found");
-            return;
-        }
-
-        int indexDepth = fieldsIndexes.get(CSV_FIELD_DEPTH);
-        double depth = 0.0;
-        if (indexDepth >= 0) {
-            try {
-                depth = parseDouble(args[indexDepth]);
-            } catch (NumberFormatException ex) {
-                System.out.println("Illegal number format: " + args[indexDepth]);
+            JSONParser parser = new JSONParser();
+            JSONArray stationsArray = (JSONArray) parser.parse(new FileReader(path));
+            JSONObject stationsObject = (JSONObject) stationsArray.get(0);
+            Set<String> keys = stationsObject.keySet();
+            String nameKey =  keys.contains(JSON_FIELD_NAME) ? JSON_FIELD_NAME :
+                    keys.contains(JSON_FIELD_NAME2) ? JSON_FIELD_NAME2 : null;
+            if (nameKey == null) {
+                System.out.println("Illegal JSON file format: " + path);
+                return;
             }
-            station.setDepth(depth);
-            System.out.println(station);
+            if (keys.contains(JSON_FIELD_DATE)) {
+                parseStationDate(stationsArray, nameKey, JSON_FIELD_DATE);
+            }
+            if (keys.contains(JSON_FIELD_DEPTH)) {
+                parseStationDepth(stationsArray, nameKey, JSON_FIELD_DEPTH);
+            } else if (keys.contains(JSON_FIELD_DEPTH2)) {
+                parseStationDepth(stationsArray, nameKey, JSON_FIELD_DEPTH2);
+            }
+        } catch (Exception e) {
+            System.out.println("File read error: " + path);
         }
+    }
 
-        int indexDate = fieldsIndexes.get(CSV_FIELD_DATE);
-        if (indexDepth >= 0) {
+    private void parseStationDate(JSONArray stationsArray, String nameKey, String dateKey) throws ParseException {
+        for (Object s : stationsArray) {
+            JSONObject station = (JSONObject) s;
+            String name = (String) station.get(nameKey);
             String dateFormat = "dd.MM.yyyy";
-            try {
-                station.setDate(new SimpleDateFormat(dateFormat).parse(args[indexDate]));
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
+            Date date = new SimpleDateFormat(dateFormat).parse((String) station.get(dateKey));
+            stationDate.put(name, date);
         }
     }
 
-    private static void  parseJSON(File file) {
-
+    private void parseStationDepth(JSONArray stationsArray, String nameKey, String depthKey) {
+        for (Object s : stationsArray) {
+            JSONObject station = (JSONObject) s;
+            String name = (String) station.get(nameKey);
+            double depth = parseDouble(String.valueOf(station.get(depthKey)));
+            stationDepth.put(name, depth);
+        }
     }
 
 }

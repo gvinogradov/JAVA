@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Getter
@@ -12,11 +14,18 @@ import java.util.Date;
 public class Station {
     private final String name;
     private final String lineNumber;
-    private double depth;
+    private Double depth;
     private Date date;
 
 
     public String toString() {
-        return "(" + lineNumber + ")" + name + " depth: " + depth;
+        String result = "(" + lineNumber + ")" + name;
+        if (depth != null) {
+            result += " depth: " + depth;
+        }
+        if (date != null) {
+            result += " date: " + (new SimpleDateFormat("dd.MM.yyyy")).format(date);
+        }
+        return result;
     }
 }
