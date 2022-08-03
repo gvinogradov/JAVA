@@ -1,17 +1,15 @@
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
 import core.Station;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.lang.Character.isDigit;
 
 public class ParseFiles {
 
@@ -39,7 +37,7 @@ public class ParseFiles {
     public static void parseCSVfile() {
         List<String> filesCSV = fileList(PATH, ".csv");
         filesCSV.forEach(str -> {
-            readCSV(str);
+            loadStationFromCSV(str);
         });
     }
 
@@ -49,40 +47,33 @@ public class ParseFiles {
     }
 
     private static double parseDouble(String str) {
-        String value = str.replaceAll("[^-\\d\\.]", "");
-        System.out.println((int) str.charAt(0));
-        System.out.println((int) "-".charAt(0));
-        System.out.println(str.toCharArray().toString().equals("-14"));
-        return ((int) str.charAt(0) == 8272) ? -1 * Double.parseDouble(value.substring(1)) :   Double.parseDouble(value);
-    }
-
-    private static List<String> parseLine(String str) {
-        List<String> fileds = new ArrayList<>();
-      //  Arrays.stream(str.split(",", 2)).;
-        if (str.contains("\"")) {
-            String[] args = str.split("\"");
-            fileds.add(args[0].replaceAll(",", ""));
-            fileds.add(args[1].replaceAll(",", "."));
-        } else {
-            fileds = Arrays.stream(str.split(",")).toList();
+        String value = str.replaceAll(",", ".").replaceAll("\"", "");
+        boolean negative = !isDigit(str.charAt(0));
+        value = value.replaceAll("[^\\d\\.]", "");
+        if (value.isEmpty()) {
+            return 0.0;
         }
-        return fileds;
+        return negative ? -1.0 * Double.parseDouble(value) : Double.parseDouble(value);
     }
 
-    public static void loadStationFromCSV(Path path) {
+    private static List<String> parseCSVLine(String str) {
+        List<String> fields = new ArrayList<>();
+        fields = Arrays.stream(str.split(",", 2)).collect(Collectors.toList());
+        return fields;
+    }
+
+    public static void loadStationFromCSV(String path) {
         try {
-            byte[] bytes = Files.readAllBytes(path);
-            List<String> lines = Arrays.stream((new String(bytes, StandardCharsets.UTF_8)
-                    .split("\\r\\n"))).toList();
-            String[] fields = lines.get(0).split(",");
+            List<String> lines = Files.readAllLines(Path.of(path));
+                    String[] fields = lines.get(0).split(",");
             if (!fields[0].equals(CSV_FIELD_NAME) && !fields[0].equals(CSV_FIELD_NAME_2)) {
                 return;
             }
             for (int i = 1; i < lines.size(); i++) {
-                List<String> values = parseLine(lines.get(i));
+                List<String> values = parseCSVLine(lines.get(i));
                 if (fields[1].equals(CSV_FIELD_DEPTH)) {
-                  //  double depth = parseDouble(values.get(1));
-                 //   System.out.println(depth);
+                    double depth = parseDouble(values.get(1));
+                    System.out.println(depth);
                 }
                 if (fields[1].equals(CSV_FIELD_DATE)) {
                     String dateFormat = "dd.MM.yyyy";
@@ -90,7 +81,7 @@ public class ParseFiles {
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("Error read file: " + path);
         }
     }
 
