@@ -2,7 +2,10 @@ import core.Line;
 import core.Station;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -31,10 +34,32 @@ public class Main {
 
         writeJSONMap("out/map.json");
         writeJSONStations("out/stations.json");
-
+        readJSONMap("out/map.json");
     }
 
-   private static void writeJSONStations(String path) {
+    private static void readJSONMap(String path) {
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject map = (JSONObject) parser.parse(new FileReader(path));
+
+            JSONArray linesArr = (JSONArray) map.get("lines");
+            JSONObject stationsObj = (JSONObject) map.get("stations");
+            linesArr.forEach(l -> {
+                String lineName = (String) ((JSONObject) l).get("name");
+                String lineNumber = (String) ((JSONObject) l).get("number");
+                Integer stationCount = ((JSONArray) stationsObj.get(lineNumber)).size();
+                System.out.println("\nline: " + lineName +
+                        "\nnumber: " + lineNumber +
+                        "\nstation count:" + stationCount );
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void writeJSONStations(String path) {
        JSONArray stationsArr = new JSONArray();
         for (Station station: stations) {
             JSONObject stationsObj = new JSONObject();
