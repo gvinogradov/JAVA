@@ -3,15 +3,11 @@ import core.Station;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Main {
     private static List<Line> lines = new ArrayList<>();
@@ -34,6 +30,37 @@ public class Main {
         });
 
         writeJSONMap("out/map.json");
+        writeJSONStations("out/stations.json");
+
+    }
+
+   private static void writeJSONStations(String path) {
+       JSONArray stationsArr = new JSONArray();
+        for (Station station: stations) {
+            JSONObject stationsObj = new JSONObject();
+            stationsObj.put("name", station.getName());
+            stationsObj.put("hasConnection", station.isHasConnection());
+            Optional lineName = lines.stream().filter(l -> l.getNumber().equals(station.getLineNumber())).findFirst();
+            if (lineName.isPresent()) {
+                stationsObj.put("line", ((Line) lineName.get()).getName());
+            }
+            if (station.getDate() != null) {
+
+                stationsObj.put("date", (new SimpleDateFormat("dd.MM.yyyy")).format(station.getDate()));
+            }
+            if (station.getDepth() != null) {
+                stationsObj.put("depth", station.getDepth());
+            }
+            stationsArr.add(stationsObj);
+        }
+
+        JSONObject jsonFile = new JSONObject();
+        jsonFile.put("stations", stationsArr);
+        try{
+            Files.write(Paths.get(path), jsonFile.toJSONString().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void writeJSONMap(String path) {
@@ -60,7 +87,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }

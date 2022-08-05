@@ -14,9 +14,9 @@ import java.util.Date;
 public class Station {
     private final String name;
     private final String lineNumber;
+    private final boolean hasConnection;
     private Double depth;
     private Date date;
-
 
     public String toString() {
         String result = "(" + lineNumber + ")" + name;

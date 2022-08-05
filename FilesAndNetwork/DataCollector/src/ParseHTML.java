@@ -2,6 +2,7 @@ import core.Line;
 import core.Station;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -13,10 +14,6 @@ public class ParseHTML {
 
     public static void parseMetroStations(List<Line> lines, List<Station> stations) {
         parseMetro(METRO_STATIONS_LIST, lines, stations);
-//        System.out.println("Линии московского метро");
-//        lines.stream().forEach(System.out::println);
-//        System.out.println("\nСтанции московского метро");
-//        stations.stream().forEach(System.out::println);
     }
 
     public static void parseMetro(String url, List<Line> lines, List<Station> stations) {
@@ -37,7 +34,8 @@ public class ParseHTML {
             String lineNumber = e.attr("data-line");
             e.children().forEach(station -> {
                 String name = station.text().replaceAll("^\\d+\\.\\s+", "");
-                stations.add(new Station(name, lineNumber));
+                boolean hasConnection = !station.select("span.t-icon-metroln").isEmpty();
+                stations.add(new Station(name, lineNumber, hasConnection));
             });
         });
     }
