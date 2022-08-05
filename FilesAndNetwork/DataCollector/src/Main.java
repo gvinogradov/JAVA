@@ -1,5 +1,13 @@
 import core.Line;
 import core.Station;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +31,36 @@ public class Main {
             if (stationDepths.containsKey(s.getName())) {
                 s.setDepth(stationDepths.get(s.getName()));
             }
-            System.out.println(s);
         });
+
+        writeJSONMap("out/map.json");
     }
+
+    private static void writeJSONMap(String path) {
+        JSONObject map = new JSONObject();
+        JSONObject stationsObect = new JSONObject();
+        JSONArray linesArr = new JSONArray();
+        for (Line line: lines) {
+            JSONObject lineObject = new JSONObject();
+            lineObject.put("name", line.getName());
+            lineObject.put("number", line.getNumber());
+            linesArr.add(lineObject);
+
+            JSONArray stationsArr = new JSONArray();
+            stations.stream().filter(s -> s.getLineNumber().equals(line.getNumber()))
+                    .forEach(s->stationsArr.add(s.getName()));
+            stationsObect.put(line.getNumber(), stationsArr);
+        }
+
+        map.put("stations", stationsObect);
+        map.put("lines", linesArr);
+
+        try{
+            Files.write(Paths.get(path), map.toJSONString().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

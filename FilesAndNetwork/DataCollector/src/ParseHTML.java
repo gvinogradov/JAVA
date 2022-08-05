@@ -13,10 +13,10 @@ public class ParseHTML {
 
     public static void parseMetroStations(List<Line> lines, List<Station> stations) {
         parseMetro(METRO_STATIONS_LIST, lines, stations);
-        System.out.println("Линии московского метро");
-        lines.stream().forEach(System.out::println);
-        System.out.println("\nСтанции московского метро");
-        stations.stream().forEach(System.out::println);
+//        System.out.println("Линии московского метро");
+//        lines.stream().forEach(System.out::println);
+//        System.out.println("\nСтанции московского метро");
+//        stations.stream().forEach(System.out::println);
     }
 
     public static void parseMetro(String url, List<Line> lines, List<Station> stations) {
