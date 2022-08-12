@@ -5,9 +5,9 @@
     <session-factory>
         <!-- JDBC Database connection settings -->
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://localhost:3306/skillbox?useSSL=false</property>
-        <property name="connection.username">root</property>
-        <property name="connection.password">testtest</property>
+        <property name="connection.url">jdbc:mysql://192.168.5.89:3306/skillbox?useSSL=false</property>
+        <property name="connection.username">skillbox</property>
+        <property name="connection.password">Ab123456</property>
         <!-- JDBC connection pool settings ... using built-in test pool -->
         <property name="connection.pool_size">10</property>
         <!-- Select our SQL dialect -->
