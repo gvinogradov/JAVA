@@ -1,17 +1,11 @@
 import jakarta.persistence.Column;
-import lombok.Getter;
+import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
 import java.util.Date;
 
-@Getter
+@Embeddable
 public class PurchaseListKey implements Serializable {
-    @Column(name = "student_name")
-    private String studentName;
-
-    @Column(name = "course_name")
-    private String courseName;
-
     private int price;
 
     @Column(name = "subscription_date")
@@ -20,25 +14,36 @@ public class PurchaseListKey implements Serializable {
     public PurchaseListKey() {
     }
 
-    public PurchaseListKey(String studentName, String courseName, int price, Date subscriptionDate) {
-        this.studentName = studentName;
-        this.courseName = courseName;
+    public PurchaseListKey(int price, Date subscriptionDate) {
         this.price = price;
         this.subscriptionDate = subscriptionDate;
     }
 
     @Override
     public int hashCode() {
-        return studentName.hashCode() + courseName.hashCode() +
-                subscriptionDate.hashCode() + Integer.hashCode(price);
+        return subscriptionDate.hashCode() + Integer.hashCode(price);
     }
 
     @Override
     public boolean equals(Object obj) {
-        PurchaseList pList = (PurchaseList) obj;
-        return studentName.equals(pList.getStudentName()) &&
-                courseName.equals(pList.getCourseName()) &&
-                subscriptionDate.equals(pList.getSubscriptionDate()) &&
-                price == pList.getPrice();
+        PurchaseListKey pList = (PurchaseListKey) obj;
+        return subscriptionDate.equals(pList.getSubscriptionDate()) &&
+               price == pList.getPrice();
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public Date getSubscriptionDate() {
+        return subscriptionDate;
+    }
+
+    public void setSubscriptionDate(Date subscriptionDate) {
+        this.subscriptionDate = subscriptionDate;
     }
 }

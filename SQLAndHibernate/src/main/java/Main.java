@@ -12,6 +12,7 @@ public class Main {
         try {
 
             Course course = session.get(Course.class, 1);
+            System.out.println(course.getType());
             System.out.printf("Course ID: %d \nCourse name: %s\nCourse teacher: %s\n\n", course.getId(), course.getName(), course.getTeacher().getName());
 
             System.out.print("\nCourse students, with subscriptions:");
@@ -28,8 +29,7 @@ public class Main {
 
             Date date = new SimpleDateFormat("yyyy-MM-dd ").parse("2018-01-02 00:00:00");
             PurchaseList purchaseList = session.get(PurchaseList.class,
-                    new PurchaseListKey("Амбражевич Порфирий", "Веб-разработчик c 0 до PRO",
-                            189600, date));
+                    new PurchaseListKey(189600, date));
 
             System.out.printf("\nGet PurchaseList record:\n%s\t%s\t%s\t%s\n", purchaseList.getStudentName(),
                     purchaseList.getCourseName(),
