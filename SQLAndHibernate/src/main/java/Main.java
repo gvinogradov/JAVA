@@ -1,3 +1,4 @@
+import Entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -10,10 +11,9 @@ public class Main {
         SessionFactory sessionFactory = HibernateUtility.getSessionFactory();
         Session session = sessionFactory.openSession();
         try {
-
             Course course = session.get(Course.class, 1);
             System.out.println(course.getType());
-            System.out.printf("Course ID: %d \nCourse name: %s\nCourse teacher: %s\n\n", course.getId(), course.getName(), course.getTeacher().getName());
+            System.out.printf("Course ID: %d \nEntity.Course name: %s\nEntity.Course teacher: %s\n\n", course.getId(), course.getName(), course.getTeacher().getName());
 
             System.out.print("\nCourse students, with subscriptions:");
             List<Student> students = course.getStudents();

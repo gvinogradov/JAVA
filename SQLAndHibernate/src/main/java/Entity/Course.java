@@ -1,3 +1,5 @@
+package Entity;
+
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -38,7 +40,7 @@ public class Course {
     )
     private List<Student> students;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course")
     private List<Subscription> subscriptions;
 
     public int getId() {

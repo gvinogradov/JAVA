@@ -1,19 +1,10 @@
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.Setter;
+package Entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-@Getter
-@Setter
-@Embeddable
 public class SubscriptionKey implements Serializable {
-
-    @Column(name = "student_id")
     private int studentId;
-
-    @Column(name = "course_id")
     private int courseId;
 
     public SubscriptionKey() {
@@ -26,13 +17,19 @@ public class SubscriptionKey implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         SubscriptionKey subKey = (SubscriptionKey) obj;
-        return studentId == subKey.getStudentId() &&
-                courseId == subKey.getCourseId();
+        return studentId == subKey.studentId &&
+                courseId == subKey.courseId;
     }
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(studentId + courseId);
+        return Objects.hash(courseId, studentId);
     }
 }

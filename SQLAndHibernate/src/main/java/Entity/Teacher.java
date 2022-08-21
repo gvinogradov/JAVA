@@ -1,3 +1,5 @@
+package Entity;
+
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,8 +17,7 @@ public class Teacher {
 
     private int age;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "teacher_id")
+    @OneToMany(mappedBy = "teacher")
     private List<Course> courses;
 
     public int getId() {
