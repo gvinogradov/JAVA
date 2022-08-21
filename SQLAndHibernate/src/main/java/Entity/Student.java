@@ -1,3 +1,5 @@
+package Entity;
+
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -17,14 +19,10 @@ public class Student {
     @Column(name = "registration_date")
     private Date registrationDate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "Subscriptions",
-            joinColumns = {@JoinColumn(name = "student_id")},
-            inverseJoinColumns = {@JoinColumn(name = "course_id")}
-    )
+    @ManyToMany(mappedBy = "students")
     private List<Course> courses;
 
-    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "student")
     private List<Subscription> subscriptions;
 
     public int getId() {

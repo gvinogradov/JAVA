@@ -1,11 +1,19 @@
+package Entity;
+
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "Subscriptions")
+@IdClass(SubscriptionKey.class)
 public class Subscription {
-    @EmbeddedId
-    private SubscriptionKey id;
+    @Id
+    @Column(name = "student_id")
+    private int studentId;
+
+    @Id
+    @Column(name = "course_id")
+    private int courseId;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student_id", insertable = false, updatable = false)
@@ -18,12 +26,20 @@ public class Subscription {
     @Column(name = "subscription_date")
     private Date subscriptionDate;
 
-    public SubscriptionKey getId() {
-        return id;
+    public int getStudentId() {
+        return studentId;
     }
 
-    public void setId(SubscriptionKey id) {
-        this.id = id;
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
+    }
+
+    public int getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
     }
 
     public Student getStudent() {

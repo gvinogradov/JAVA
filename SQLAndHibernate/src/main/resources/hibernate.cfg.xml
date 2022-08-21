@@ -11,7 +11,7 @@
         <!-- JDBC connection pool settings ... using built-in test pool -->
         <property name="connection.pool_size">10</property>
         <!-- Select our SQL dialect -->
-        <property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
         <!-- Echo the SQL to stdout -->
         <property name="show_sql">true</property>
         <!-- Set the current session context -->
@@ -19,10 +19,10 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
 
-        <mapping class="Course"></mapping>
-        <mapping class="Teacher"></mapping>
-        <mapping class="Student"></mapping>
-        <mapping class="Subscription"></mapping>
-        <mapping class="PurchaseList"></mapping>
+        <mapping class="Entity.Course"></mapping>
+        <mapping class="Entity.Teacher"></mapping>
+        <mapping class="Entity.Student"></mapping>
+        <mapping class="Entity.Subscription"></mapping>
+        <mapping class="Entity.PurchaseList"></mapping>
     </session-factory>
 </hibernate-configuration>
