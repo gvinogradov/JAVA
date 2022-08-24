@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Entity.PurchaseList")
+@Table(name = "PurchaseList")
 @IdClass(PurchaseListKey.class)
 public class PurchaseList {
     @Id
@@ -16,11 +16,19 @@ public class PurchaseList {
     @Column(name = "subscription_date")
     private Date subscriptionDate;
 
-    @Column(name = "student_name")
+    @Column(name = "student_name", insertable = false, updatable = false)
     private String studentName;
 
-    @Column(name = "course_name")
+    @Column(name = "course_name", insertable = false, updatable = false)
     private String courseName;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_name", referencedColumnName = "name")
+    private Course course;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_name", referencedColumnName = "name")
+    private Student student;
 
     public int getPrice() {
         return price;
@@ -52,5 +60,21 @@ public class PurchaseList {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

@@ -24,5 +24,6 @@
         <mapping class="Entity.Student"></mapping>
         <mapping class="Entity.Subscription"></mapping>
         <mapping class="Entity.PurchaseList"></mapping>
+        <mapping class="Entity.LinkedPurchaseList"></mapping>
     </session-factory>
 </hibernate-configuration>

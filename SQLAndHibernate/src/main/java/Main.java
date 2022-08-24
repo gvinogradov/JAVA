@@ -1,40 +1,48 @@
 import Entity.*;
+import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
         SessionFactory sessionFactory = HibernateUtility.getSessionFactory();
         Session session = sessionFactory.openSession();
         try {
-            Course course = session.get(Course.class, 1);
-            System.out.println(course.getType());
-            System.out.printf("Course ID: %d \nEntity.Course name: %s\nEntity.Course teacher: %s\n\n", course.getId(), course.getName(), course.getTeacher().getName());
 
-            System.out.print("\nCourse students, with subscriptions:");
-            List<Student> students = course.getStudents();
-            students.forEach(s -> {
-                List<Subscription> subscriptions = s.getSubscriptions();
-                System.out.printf("\nStudent: %s\n", s.getName());
-                subscriptions.forEach(subscription -> {
-                        Date subscriptionDate = subscription.getSubscriptionDate();
-                        Course currentCourse = subscription.getCourse();
-                    System.out.printf("Course name: %s, subscription date: %s\n",currentCourse.getName(), subscriptionDate);
-                });
-             });
+            CriteriaBuilder builder = session.getCriteriaBuilder();
 
-            Date date = new SimpleDateFormat("yyyy-MM-dd ").parse("2018-01-02 00:00:00");
-            PurchaseList purchaseList = session.get(PurchaseList.class,
-                    new PurchaseListKey(189600, date));
+            CriteriaQuery<LinkedPurchaseList> linkedPCriteria = builder.createQuery(LinkedPurchaseList.class);
+            Root<LinkedPurchaseList> rootLinkedPList = linkedPCriteria.from(LinkedPurchaseList.class);
+            linkedPCriteria.select(rootLinkedPList);
+            HashSet<LinkedPurchaseList> linkedPSet = (HashSet<LinkedPurchaseList>) session.createQuery(linkedPCriteria)
+                    .getResultList().stream().collect(Collectors.toSet());
 
-            System.out.printf("\nGet PurchaseList record:\n%s\t%s\t%s\t%s\n", purchaseList.getStudentName(),
-                    purchaseList.getCourseName(),
-                    purchaseList.getPrice(),
-                    purchaseList.getSubscriptionDate());
+            CriteriaQuery<PurchaseList> pCriteria = builder.createQuery(PurchaseList.class);
+            Root<PurchaseList> root = pCriteria.from(PurchaseList.class);
+            pCriteria.select(root);
+            List<PurchaseList> purchaseLists = session.createQuery(pCriteria).getResultList();
+
+
+
+            Transaction transaction = session.beginTransaction();
+
+            purchaseLists.forEach(p -> {
+                LinkedPurchaseList record = new LinkedPurchaseList(
+                        p.getStudent().getId(),
+                        p.getCourse().getId());
+                if (linkedPSet.contains(record)) {
+                    return;
+                }
+                session.persist(record);
+            });
+
+            transaction.commit();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
