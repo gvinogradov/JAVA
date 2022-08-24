@@ -1,43 +1,44 @@
-import Entity.*;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import entity.Course;
+import entity.LinkedPurchaseList;
+import entity.PurchaseList;
+import entity.Student;
+import service.CourseService;
+import service.LinkedPurchaseListService;
+import service.PurchaseListService;
+import service.StudentService;
+import utils.HibernateUtility;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        SessionFactory sessionFactory = HibernateUtility.getSessionFactory();
-        Session session = sessionFactory.openSession();
         try {
-            Course course = session.get(Course.class, 1);
-            System.out.println(course.getType());
-            System.out.printf("Course ID: %d \nEntity.Course name: %s\nEntity.Course teacher: %s\n\n", course.getId(), course.getName(), course.getTeacher().getName());
+            CourseService courseService = new CourseService();
+            StudentService studentService = new StudentService();
+            PurchaseListService purchaseListService = new PurchaseListService();
+            LinkedPurchaseListService linkedPurchaseListService = new LinkedPurchaseListService();
 
-            System.out.print("\nCourse students, with subscriptions:");
-            List<Student> students = course.getStudents();
-            students.forEach(s -> {
-                List<Subscription> subscriptions = s.getSubscriptions();
-                System.out.printf("\nStudent: %s\n", s.getName());
-                subscriptions.forEach(subscription -> {
-                        Date subscriptionDate = subscription.getSubscriptionDate();
-                        Course currentCourse = subscription.getCourse();
-                    System.out.printf("Course name: %s, subscription date: %s\n",currentCourse.getName(), subscriptionDate);
-                });
-             });
+            List<Course> courses = courseService.getAll();
+            List<Student> students = studentService.getAll();
+            List<PurchaseList> purchaseLists = purchaseListService.getAll();
 
-            Date date = new SimpleDateFormat("yyyy-MM-dd ").parse("2018-01-02 00:00:00");
-            PurchaseList purchaseList = session.get(PurchaseList.class,
-                    new PurchaseListKey(189600, date));
+            List<LinkedPurchaseList> linkedPurchaseLists = new ArrayList<>();
 
-            System.out.printf("\nGet PurchaseList record:\n%s\t%s\t%s\t%s\n", purchaseList.getStudentName(),
-                    purchaseList.getCourseName(),
-                    purchaseList.getPrice(),
-                    purchaseList.getSubscriptionDate());
+            for (PurchaseList purchaseList: purchaseLists) {
+                Integer courseId = courseService.getIdByName(courses, purchaseList.getCourseName());
+                Integer studentId = studentService.getIdByName(students, purchaseList.getStudentName());
+                if (courseId == null || studentId == null) {
+                    continue;
+                }
+                linkedPurchaseLists.add(new LinkedPurchaseList(studentId, courseId));
+            }
+
+            linkedPurchaseListService.addAll(linkedPurchaseLists);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sessionFactory.close();
+        HibernateUtility.getSessionFactory().close();
     }
 }

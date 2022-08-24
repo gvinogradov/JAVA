@@ -19,10 +19,11 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hbm2ddl.auto">update</property>
 
-        <mapping class="Entity.Course"></mapping>
-        <mapping class="Entity.Teacher"></mapping>
-        <mapping class="Entity.Student"></mapping>
-        <mapping class="Entity.Subscription"></mapping>
-        <mapping class="Entity.PurchaseList"></mapping>
+        <mapping class="entity.Course"></mapping>
+        <mapping class="entity.Teacher"></mapping>
+        <mapping class="entity.Student"></mapping>
+        <mapping class="entity.Subscription"></mapping>
+        <mapping class="entity.PurchaseList"></mapping>
+        <mapping class="entity.LinkedPurchaseList"></mapping>
     </session-factory>
 </hibernate-configuration>

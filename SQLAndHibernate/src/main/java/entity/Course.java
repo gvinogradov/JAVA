@@ -1,4 +1,4 @@
-package Entity;
+package entity;
 
 import jakarta.persistence.*;
 
@@ -22,14 +22,14 @@ public class Course {
     private String description;
 
     @Column(name = "students_count")
-    private int studentsCount;
+    private Integer studentsCount;
 
     private int price;
 
     @Column(name = "price_per_hour")
     private float pricePerHour;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
@@ -42,6 +42,9 @@ public class Course {
 
     @OneToMany(mappedBy = "course")
     private List<Subscription> subscriptions;
+
+    public Course() {
+    }
 
     public int getId() {
         return id;
@@ -83,11 +86,11 @@ public class Course {
         this.description = description;
     }
 
-    public int getStudentsCount() {
+    public Integer getStudentsCount() {
         return studentsCount;
     }
 
-    public void setStudentsCount(int studentsCount) {
+    public void setStudentsCount(Integer studentsCount) {
         this.studentsCount = studentsCount;
     }
 

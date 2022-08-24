@@ -1,11 +1,11 @@
-package Entity;
+package entity;
 
 import jakarta.persistence.*;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "Entity.PurchaseList")
+@Table(name = "PurchaseList")
 @IdClass(PurchaseListKey.class)
 public class PurchaseList {
     @Id
@@ -16,11 +16,14 @@ public class PurchaseList {
     @Column(name = "subscription_date")
     private Date subscriptionDate;
 
-    @Column(name = "student_name")
+    @Column(name = "student_name", insertable = false, updatable = false)
     private String studentName;
 
-    @Column(name = "course_name")
+    @Column(name = "course_name", insertable = false, updatable = false)
     private String courseName;
+
+    public PurchaseList() {
+    }
 
     public int getPrice() {
         return price;
