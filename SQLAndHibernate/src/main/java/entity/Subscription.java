@@ -1,18 +1,21 @@
-package Entity;
+package entity;
 
 import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Subscriptions")
-@IdClass(SubscriptionKey.class)
+@Table( name = "Subscriptions", indexes = @Index(
+        columnList = "student_id, course_id",
+        name = "unq")
+)
 public class Subscription {
-    @Id
-    @Column(name = "student_id")
+    @EmbeddedId
+    private SubscriptionKey subscriptionKey;
+
+    @Column(name = "student_id", insertable = false, updatable = false)
     private int studentId;
 
-    @Id
-    @Column(name = "course_id")
+    @Column(name = "course_id", insertable = false, updatable = false)
     private int courseId;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -26,20 +29,15 @@ public class Subscription {
     @Column(name = "subscription_date")
     private Date subscriptionDate;
 
-    public int getStudentId() {
-        return studentId;
+    public Subscription() {
     }
 
-    public void setStudentId(int studentId) {
-        this.studentId = studentId;
+    public SubscriptionKey getSubscriptionKey() {
+        return subscriptionKey;
     }
 
-    public int getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
+    public void setSubscriptionKey(SubscriptionKey subscriptionKey) {
+        this.subscriptionKey = subscriptionKey;
     }
 
     public Student getStudent() {

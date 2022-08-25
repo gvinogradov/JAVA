@@ -1,51 +1,44 @@
-import Entity.*;
-import jakarta.persistence.criteria.*;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import entity.Course;
+import entity.LinkedPurchaseList;
+import entity.PurchaseList;
+import entity.Student;
+import service.CourseService;
+import service.LinkedPurchaseListService;
+import service.PurchaseListService;
+import service.StudentService;
+import utils.HibernateUtility;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        SessionFactory sessionFactory = HibernateUtility.getSessionFactory();
-        Session session = sessionFactory.openSession();
         try {
+            CourseService courseService = new CourseService();
+            StudentService studentService = new StudentService();
+            PurchaseListService purchaseListService = new PurchaseListService();
+            LinkedPurchaseListService linkedPurchaseListService = new LinkedPurchaseListService();
 
-            CriteriaBuilder builder = session.getCriteriaBuilder();
+            List<Course> courses = courseService.getAll();
+            List<Student> students = studentService.getAll();
+            List<PurchaseList> purchaseLists = purchaseListService.getAll();
 
-            CriteriaQuery<LinkedPurchaseList> linkedPCriteria = builder.createQuery(LinkedPurchaseList.class);
-            Root<LinkedPurchaseList> rootLinkedPList = linkedPCriteria.from(LinkedPurchaseList.class);
-            linkedPCriteria.select(rootLinkedPList);
-            HashSet<LinkedPurchaseList> linkedPSet = (HashSet<LinkedPurchaseList>) session.createQuery(linkedPCriteria)
-                    .getResultList().stream().collect(Collectors.toSet());
+            List<LinkedPurchaseList> linkedPurchaseLists = new ArrayList<>();
 
-            CriteriaQuery<PurchaseList> pCriteria = builder.createQuery(PurchaseList.class);
-            Root<PurchaseList> root = pCriteria.from(PurchaseList.class);
-            pCriteria.select(root);
-            List<PurchaseList> purchaseLists = session.createQuery(pCriteria).getResultList();
-
-
-
-            Transaction transaction = session.beginTransaction();
-
-            purchaseLists.forEach(p -> {
-                LinkedPurchaseList record = new LinkedPurchaseList(
-                        p.getStudent().getId(),
-                        p.getCourse().getId());
-                if (linkedPSet.contains(record)) {
-                    return;
+            for (PurchaseList purchaseList: purchaseLists) {
+                Integer courseId = courseService.getIdByName(courses, purchaseList.getCourseName());
+                Integer studentId = studentService.getIdByName(students, purchaseList.getStudentName());
+                if (courseId == null || studentId == null) {
+                    continue;
                 }
-                session.persist(record);
-            });
+                linkedPurchaseLists.add(new LinkedPurchaseList(studentId, courseId));
+            }
 
-            transaction.commit();
+            linkedPurchaseListService.addAll(linkedPurchaseLists);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sessionFactory.close();
+        HibernateUtility.getSessionFactory().close();
     }
 }

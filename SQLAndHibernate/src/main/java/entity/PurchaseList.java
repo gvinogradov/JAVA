@@ -1,4 +1,4 @@
-package Entity;
+package entity;
 
 import jakarta.persistence.*;
 
@@ -22,13 +22,8 @@ public class PurchaseList {
     @Column(name = "course_name", insertable = false, updatable = false)
     private String courseName;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_name", referencedColumnName = "name")
-    private Course course;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_name", referencedColumnName = "name")
-    private Student student;
+    public PurchaseList() {
+    }
 
     public int getPrice() {
         return price;
@@ -60,21 +55,5 @@ public class PurchaseList {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 }

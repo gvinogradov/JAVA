@@ -1,2 +1,6 @@
-package dao;public interface TeacherDAO {
+package dao;
+
+import entity.Teacher;
+
+public interface TeacherDAO extends AbstractDAO<Teacher> {
 }

@@ -1,4 +1,4 @@
-package Entity;
+package entity;
 
 import jakarta.persistence.*;
 
@@ -24,6 +24,9 @@ public class Student {
 
     @OneToMany(mappedBy = "student")
     private List<Subscription> subscriptions;
+
+    public Student() {
+    }
 
     public int getId() {
         return id;
