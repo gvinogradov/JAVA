@@ -37,4 +37,9 @@ public class Account {
     public Account setAccNumber(String accNumber) {
         return new Account(money, accNumber, blocked);
     }
+
+    @Override
+    public String toString() {
+        return accNumber + " : " + money + (blocked ? " - blocked" : "");
+    }
 }
