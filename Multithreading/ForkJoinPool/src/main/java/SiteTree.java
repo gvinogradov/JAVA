@@ -44,7 +44,7 @@ public class SiteTree extends RecursiveTask<List<String>> {
 
                 if (subURL.size() <= treshhold) {
                     result.addAll(computeDirectly(subURL));
-                    return result;
+                    continue;
                 }
 
                 SiteTree newTask = new SiteTree(subURL, treshhold, timeoutMs);
