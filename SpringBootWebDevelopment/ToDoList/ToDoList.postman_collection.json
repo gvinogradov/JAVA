@@ -1,0 +1,354 @@
+{
+	"info": {
+		"_postman_id": "4d47f4f1-3744-4936-bed8-1f94f7c04d11",
+		"name": "ToDoList",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET ALL USERS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET USER",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST USER",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=UTF-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"firstName\":\"Иван\",\r\n\"lastName\":\"Петров\",\r\n\"email\": \"i_petrov@mail.ru\",\r\n\"password\": \"password\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/users/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT USER",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=UTF-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"firstName\": \"Петр\",\r\n     \"lastName\": \"Иванов\",\r\n     \"email\": \"p_iv@mail.ru\",\r\n     \"password:\": \"pas\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT LIST OF USERS",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=UTF-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n{\r\n    \"id\": 1,\r\n     \"firstName\": \"Петр\",\r\n     \"lastName\": \"Иванов\",\r\n     \"email\": \"p_iv@mail.ru\",\r\n     \"password\": \"pas\"\r\n},\r\n{   \r\n     \"id\": 2,\r\n     \"firstName\": \"Иван\",\r\n     \"lastName\": \"Петров\",\r\n     \"email\": \"i_petrov@mail.ru\",\r\n     \"password\": \"password\"\r\n}\r\n]"
+				},
+				"url": {
+					"raw": "localhost:8080/users/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE USER",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE ALL USERS",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET ALL TASKS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/1/tasks/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1",
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET TASK",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/1/tasks/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1",
+						"tasks",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST TASK",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=UTF-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"name\": \"Задача на подбор персонала\",\r\n     \"description\": \"описание задачи\",\r\n     \"createDate\": \"2022-09-21 08:00:21\",\r\n     \"start\": \"2022-09-22 12:00:21\",\r\n     \"end\": \"2022-09-22 22:00:21\",\r\n     \"status\": \"NEW\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/users/1/tasks/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1",
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT TASK",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=UTF-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"name\": \"Задача новая\",\r\n     \"description\": \"pflfxf2\",\r\n     \"createDate\": \"2022-09-21 08:00:21\",\r\n     \"start\": \"2022-09-22 12:00:21\",\r\n     \"end\": \"2022-09-22 22:00:21\",\r\n     \"status\": \"PLANNED\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/users/1/tasks/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1",
+						"tasks",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT LIST OF TASK",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json; charset=UTF-8",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n{\r\n    \"id\": 1,\r\n     \"name\": \"Задача 1\",\r\n     \"description\": \"описание задачи\",\r\n     \"createDate\": \"2022-09-21 08:00:21\",\r\n     \"start\": \"2022-09-22 12:00:21\",\r\n     \"end\": \"2022-09-22 22:00:21\",\r\n     \"status\": \"NEW\"\r\n},\r\n{\r\n    \"id\": 2,\r\n     \"name\": \"Задача 2\",\r\n     \"description\": \"описание задачи\",\r\n     \"createDate\": \"2022-09-21 08:00:21\",\r\n     \"start\": \"2022-09-22 12:00:21\",\r\n     \"end\": \"2022-09-22 22:00:21\",\r\n     \"status\": \"NEW\"\r\n}\r\n]"
+				},
+				"url": {
+					"raw": "localhost:8080/users/1/tasks/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1",
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE TASK",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/1/tasks/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1",
+						"tasks",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE ALL TASKS",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/1/tasks/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1",
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
