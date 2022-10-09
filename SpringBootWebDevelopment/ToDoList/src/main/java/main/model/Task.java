@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "Tasks")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,12 +34,12 @@ public class Task {
     private LocalDateTime createDate;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime start;
+    private LocalDateTime startDate;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime end;
+    private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "enum('NEW','PLANNED','RUNNING','COMPLETED')")
+//    @Column(columnDefinition = "enum('NEW','PLANNED','RUNNING','COMPLETED')")  //MySQL only
     private TaskStatus status;
 }

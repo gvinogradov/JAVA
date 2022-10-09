@@ -66,8 +66,8 @@ public class TaskServiceImpl implements TaskService{
             task.setName(taskRequest.getName());
             task.setDescription(taskRequest.getDescription());
             task.setCreateDate(taskRequest.getCreateDate());
-            task.setStart(taskRequest.getStart());
-            task.setEnd(taskRequest.getEnd());
+            task.setStartDate(taskRequest.getStartDate());
+            task.setEndDate(taskRequest.getEndDate());
             task.setStatus(taskRequest.getStatus());
             task.setStatus(taskRequest.getStatus());
             return taskRepository.save(task);
