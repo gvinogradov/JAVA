@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,20 @@ public class TaskServiceImpl implements TaskService{
         return userRepository.findById(userId)
                 .map(user -> user.getTasks())
                 .orElseThrow(() -> new ResourceNotFoundException("userId " + userId + " not found"));
+    }
+
+    @Override
+    public List<Task> getAllTasksAnyUsers() {
+        List<Task> taskList = new ArrayList<>();
+        taskRepository.findAll().forEach(task -> {
+            taskList.add(task);
+        });
+        return taskList;
+    }
+
+    @Override
+    public Long getAllTasksAnyUsersCount() {
+        return taskRepository.count();
     }
 
     @Override

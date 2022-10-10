@@ -14,6 +14,12 @@ public interface TaskService {
     List<Task> getAll(@NotNull long userId);
 
     @NotNull
+    List<Task> getAllTasksAnyUsers();
+
+    @NotNull
+    Long getAllTasksAnyUsersCount();
+
+    @NotNull
     ResponseEntity<Task> add(@NotNull long userId, @NotNull Task task);
 
     @NotNull
